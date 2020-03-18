@@ -1,6 +1,7 @@
 import boto3
 from boto3 import client
 import bs4
+from datetime import datetime,timedelta
 
 def getFilesAndFolderOfBucket(strBucket,strPrefix):
     conn = client('s3')
@@ -20,7 +21,10 @@ def uploadIndexFile(strBucket,strPrefix,strIndexFile):
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(strBucket)
     bucket.upload_file(strIndexFile, strPrefix + strIndexFile,
-                       ExtraArgs={'ACL': 'public-read', 'ContentType': 'text/html'})
+                       ExtraArgs={
+                           'ACL': 'public-read',
+                           'Expires': (datetime.now() + timedelta(days=1)).isoformat(),
+                           'ContentType': 'text/html'})
 
 def generateIndexFile(strBucket,strPrefix,strIndexFile,vecFiles,vecFolders,strTemplate):
     with open(strTemplate) as inf:
