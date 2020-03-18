@@ -44,8 +44,13 @@ def generateIndexFile(strBucket,strPrefix,strIndexFile,vecFiles,vecFolders,strTe
 
 def recPopulateIndexFiles(strBucket,strPrefix,strTemplate):
     (vecFiles, vecFolders) = getFilesAndFolderOfBucket(strBucket, strPrefix)
-    generateIndexFile(strBucket, strPrefix, strIndexFile, vecFiles, vecFolders,strTemplate)
-    uploadIndexFile(strBucket, strPrefix, strIndexFile)
+    if (strPrefix+'index.html' not in vecFiles) or not strPrefix:
+        print("uploading index.html to {}/{}".format(strBucket, strPrefix))
+        generateIndexFile(strBucket, strPrefix, strIndexFile, vecFiles, vecFolders,strTemplate)
+        uploadIndexFile(strBucket, strPrefix, strIndexFile)
+    else:
+        print("index.html contained in {}/{}".format(strBucket, strPrefix))
+
     for strFolder in vecFolders:
         recPopulateIndexFiles(strBucket, strFolder,strTemplate)
 
